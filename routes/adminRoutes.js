@@ -23,9 +23,9 @@ router.get("/users", protect, adminOnly, async (req, res) => {
     const users = await User.find(query).select("-password");
 
     res.json(users);
-  }.catch((err) => {
-  console.log("ERROR:", err.response?.status);
-  console.log("DATA:", err.response?.data);
+  } catch (error) {
+    res.status(400).json({ message: "Failed to fetch users" });
+  }
 });
 // Add Car
 router.post("/cars", protect, adminOnly, async (req, res) => {
@@ -96,5 +96,3 @@ router.put("/bookings/:id", protect, adminOnly, async (req, res) => {
 
 
 module.exports = router;
-
-
