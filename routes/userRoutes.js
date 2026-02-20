@@ -30,16 +30,33 @@ router.post("/bookings", protect, async (req, res) => {
   try {
     const { car, startDate, endDate } = req.body;
 
+    // 🔹 Check if fields exist
+    if (!car || !startDate || !endDate) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+
+    // 🔹 Validate dates BEFORE creating booking
+    if (new Date(startDate) >= new Date(endDate)) {
+      return res.status(400).json({ message: "Invalid booking dates" });
+    }
+    if (new Date(startDate) < new Date()) {
+      return res.status(400).json({ message: "Start date cannot be in the past" });
+    }
+
     const booking = await Booking.create({
       user: req.user._id,
       car,
       startDate,
-      endDate
+      endDate,
+      status: "pending"
     });
 
     res.status(201).json(booking);
+
   } catch (error) {
     res.status(400).json({ message: "Booking failed" });
   }
 });
+
+
 module.exports = router;
