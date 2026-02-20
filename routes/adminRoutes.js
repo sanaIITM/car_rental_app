@@ -23,7 +23,7 @@ router.get("/users", protect, adminOnly, async (req, res) => {
     const users = await User.find(query).select("-password");
 
     res.json(users);
-  } catch((err) => {
+  }.catch((err) => {
   console.log("ERROR:", err.response?.status);
   console.log("DATA:", err.response?.data);
 });
@@ -96,4 +96,5 @@ router.put("/bookings/:id", protect, adminOnly, async (req, res) => {
 
 
 module.exports = router;
+
 
