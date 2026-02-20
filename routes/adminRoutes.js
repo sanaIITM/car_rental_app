@@ -1,13 +1,13 @@
 const express = require("express");
 const router = express.Router();
 const Car = require("../models/Car");
+const User = require("../models/User");
 const { protect, adminOnly } = require("../middleware/authMiddleware");
 
 // Check admin
 router.get("/check-admin", protect, adminOnly, (req, res) => {
   res.json({ message: "Admin access granted" });
 });
-
 
 // Get all users (admin only) with optional username search
 router.get("/users", protect, adminOnly, async (req, res) => {
@@ -27,6 +27,7 @@ router.get("/users", protect, adminOnly, async (req, res) => {
     res.status(400).json({ message: "Failed to fetch users" });
   }
 });
+
 // Add Car
 router.post("/cars", protect, adminOnly, async (req, res) => {
   const car = await Car.create(req.body);
@@ -92,7 +93,6 @@ router.put("/bookings/:id", protect, adminOnly, async (req, res) => {
     res.status(400).json({ message: "Invalid booking ID" });
   }
 });
-
 
 
 module.exports = router;
