@@ -8,6 +8,25 @@ router.get("/check-admin", protect, adminOnly, (req, res) => {
   res.json({ message: "Admin access granted" });
 });
 
+
+// Get all users (admin only) with optional username search
+router.get("/users", protect, adminOnly, async (req, res) => {
+  try {
+    const { username } = req.query;
+
+    const query = {};
+
+    if (username) {
+      query.name = { $regex: username, $options: "i" };
+    }
+
+    const users = await User.find(query).select("-password");
+
+    res.json(users);
+  } catch (error) {
+    res.status(400).json({ message: "Failed to fetch users" });
+  }
+});
 // Add Car
 router.post("/cars", protect, adminOnly, async (req, res) => {
   const car = await Car.create(req.body);
@@ -73,6 +92,7 @@ router.put("/bookings/:id", protect, adminOnly, async (req, res) => {
     res.status(400).json({ message: "Invalid booking ID" });
   }
 });
+
 
 
 module.exports = router;
